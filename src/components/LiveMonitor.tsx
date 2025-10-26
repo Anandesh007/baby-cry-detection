@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Camera, CameraOff, Upload, AlertCircle, CheckCircle } from 'lucide-react';
+import { Camera, CameraOff, AlertCircle, CheckCircle } from 'lucide-react';
 import { useMediaCapture } from '../hooks/useMediaCapture';
 import { analyzeMedia } from '../services/api';
 import type { AnalysisResponse } from '../types';
@@ -102,41 +102,6 @@ export default function LiveMonitor() {
     }
   };
 
-  const handleUploadAudio = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setError(null);
-      setIsAnalyzing(true);
-
-      const videoBlob = new Blob([], { type: 'video/webm' });
-      const result = await analyzeMedia(file, videoBlob, new Date());
-      setCurrentDetection(result);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
-  const handleUploadVideo = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setError(null);
-      setIsAnalyzing(true);
-
-      const audioBlob = new Blob([], { type: 'audio/webm' });
-      const result = await analyzeMedia(audioBlob, file, new Date());
-      setCurrentDetection(result);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
 
   useEffect(() => {
     return () => {
@@ -193,32 +158,6 @@ export default function LiveMonitor() {
                     Stop Monitoring
                   </button>
                 )}
-              </div>
-
-              <div className="flex gap-3">
-                <label className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer transition">
-                  <Upload className="w-4 h-4" />
-                  Upload Audio
-                  <input
-                    type="file"
-                    accept="audio/*"
-                    onChange={handleUploadAudio}
-                    className="hidden"
-                    disabled={isMonitoring}
-                  />
-                </label>
-
-                <label className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 cursor-pointer transition">
-                  <Upload className="w-4 h-4" />
-                  Upload Video
-                  <input
-                    type="file"
-                    accept="video/*"
-                    onChange={handleUploadVideo}
-                    className="hidden"
-                    disabled={isMonitoring}
-                  />
-                </label>
               </div>
 
               <div className="flex items-center gap-2">
